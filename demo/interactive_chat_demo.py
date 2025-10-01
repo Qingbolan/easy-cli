@@ -16,7 +16,6 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from rich.console import Console
-from rich.prompt import Prompt
 from easycli.chat_display import LiveChatDisplay
 from easycli.command_system import CommandRegistry
 
@@ -120,24 +119,26 @@ def main():
     @demo_commands.command("help", description="Show help", category="Demo")
     def help_cmd(app, args): pass
 
-    # Start live display (no alternate screen to keep input stable)
+    # Use main screen (no alternate screen) for better IME compatibility
     chat_display.start(use_alt_screen=False)
+
+    # Use multiline mode for best IME support with Shift+Enter for newlines
+    # This allows proper Chinese/Japanese/Korean input and multi-line messages
+    def read_input_multiline():
+        return chat_display.read_input(mode="multiline")
 
     running = True
 
     try:
         while running:
-            # Read user input inside the footer area (or fallback prompt)
-            input_mode = os.getenv("EASYCLI_INPUT_MODE", "footer")  # footer | inline | prompt
-            user_input = chat_display.read_input(mode=input_mode)
+            # Read user input with multi-line support and IME
+            user_input = read_input_multiline()
 
             if not user_input:
-                chat_display.start()
                 continue
 
             # Show command list if user just types /
             if user_input == "/":
-                # Temporarily pause live to show command list below the UI
                 with chat_display.pause():
                     demo_commands.show_command_list(console)
                     input("\n[dim]Press Enter to continue...[/dim]")

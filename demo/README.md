@@ -90,8 +90,7 @@ python demo/interactive_chat_demo.py
 │                                                         │
 ├─────────────────────────────────────────────────────────┤
 │  Ready                                                  │ ← Status (left-aligned)
-│  ──────────────────────────────────────────────────────│ ← Separator
-│  > Type your message...                                 │ ← Input prompt
+                   │ ← Input prompt
 │  ──────────────────────────────────────────────────────│ ← Separator
 │  interactive                    Type / for commands     │ ← Mode (left) + Tips (right)
 └─────────────────────────────────────────────────────────┘

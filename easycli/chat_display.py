@@ -199,7 +199,6 @@ class LiveChatDisplay:
         *,
         left_label: Optional[str] = None,
         tips: Optional[str] = None,
-        placeholder: Optional[str] = None,
         footer_offset: int = 2,
         input_reserved_lines: int = 2,
     ):
@@ -215,11 +214,11 @@ class LiveChatDisplay:
         self._alt_screen = False  # remember alt-screen preference
         self.input_reserved_lines = max(1, int(input_reserved_lines))
         self._default_reserved_lines = self.input_reserved_lines
+        self.clear_on_refresh = False  # when True, clear scrollback each refresh
         # Footer input component (polymorphic)
         self.input_box = InputBox(
             left_label=left_label or self.mode,
             tips=tips or "Type / for commands",
-            placeholder=placeholder or "Type your message...",
             footer_offset=footer_offset,
         )
         self._setup_layout()
@@ -247,14 +246,15 @@ class LiveChatDisplay:
         self.layout["header"].update(header)
     
     def _update_footer(self, status: str = "ready", user_input: str = "", input_mode: bool = False):
-        """Update footer using the InputBox component."""
+        """Update footer using the InputBox component.
+
+        Keep footer height stable to avoid layout jitter; composer remains
+        single-line (cropped) for reliability with IME.
+        """
         self.status = status
-        # Adjust footer height: 4 fixed lines + input block (reserved when active)
-        if input_mode:
-            self.layout["footer"].size = 4 + self.input_reserved_lines
-        else:
-            self.layout["footer"].size = 5
-        renderable = self.input_box.render(status, user_input=user_input, input_active=input_mode)
+        # Keep stable height of 5 lines for the footer
+        self.layout["footer"].size = 3
+        renderable = self.input_box.render(status)
         self.layout["footer"].update(renderable)
 
     @contextmanager
@@ -338,8 +338,8 @@ class LiveChatDisplay:
             visible.insert(0, r)
             used += h
 
-        # Spacer between messages if space permits (optional)
-        self.layout["chat"].update(Align(Group(*visible), vertical="bottom", height=chat_h))
+        # Bottom-align content within the chat area (let Layout control height)
+        self.layout["chat"].update(Align(Group(*visible), vertical="bottom"))
 
     def _render_message(self, role: str, content: str, streaming: bool = False, duration: Optional[float] = None):
         """Render message in minimalist style (no emoji, minimal chrome)"""
@@ -399,17 +399,50 @@ class LiveChatDisplay:
             screen=use_alt_screen,
         )
         self.live.start()
+        if self.clear_on_refresh:
+            # Clear terminal scrollback so only current UI is visible
+            try:
+                self.console.print("\x1b[3J", end="")
+            except Exception:
+                pass
     
     def stop(self):
         """Stop real-time display"""
         if self.live:
             self.live.stop()
+
+    def clear_scrollback(self):
+        """Clear terminal scrollback buffer (xterm CSI 3 J)."""
+        try:
+            out = getattr(self.console, "file", None)
+            if out:
+                out.write("\x1b[3J")
+                out.flush()
+        except Exception:
+            pass
+
+    def _clear_all(self):
+        """Clear screen and scrollback, then home cursor."""
+        try:
+            out = getattr(self.console, "file", None)
+            if out:
+                out.write("\x1b[H\x1b[2J\x1b[3J")
+                out.flush()
+        except Exception:
+            pass
+
+    def refresh(self):
+        """Refresh Live, optionally clearing scrollback first."""
+        if self.clear_on_refresh:
+            self._clear_all()
+        if self.live:
+            self.live.refresh()
     
     def add_user_message(self, content: str):
         """Add user message"""
         self.messages.append({"role": "user", "content": content})
         self._update_chat()
-        self.live.refresh()
+        self.refresh()
     
     def start_assistant_message(self):
         """Start AI response"""
@@ -418,7 +451,7 @@ class LiveChatDisplay:
         self.current_streaming_start_time = time.time()
         self._update_footer("typing")
         self._update_chat()
-        self.live.refresh()
+        self.refresh()
 
     def append_streaming(self, chunk: str):
         """Append streaming content"""
@@ -444,72 +477,42 @@ class LiveChatDisplay:
             self.current_streaming_start_time = None
         self._update_footer("ready")
         self._update_chat()
-        self.live.refresh()
+        self.refresh()
     
     def clear_messages(self):
         """Clear messages"""
         self.messages = []
         self.current_streaming = ""
         self._update_chat()
-        self.live.refresh()
+        self.refresh()
     
     def show_error(self, message: str):
         """Display error"""
         self._update_footer(f"❌ [bold red]{message}[/bold red]")
-        self.live.refresh()
+        self.refresh()
     
     def show_success(self, message: str):
         """Display success"""
         self._update_footer(f"✅ [bold green]{message}[/bold green]")
-        self.live.refresh()
+        self.refresh()
 
-    def read_input(self, mode: str = "footer") -> str:
-        """Read user input.
-
-        - mode="footer": cooked input inside the footer input row (best IME support)
-        - mode="inline":  cbreak mode, live-updating the footer (less IME friendly)
-        - mode="prompt":  standard prompt below the UI
-        """
-        import os, sys
-
-        if mode == "footer":
-            # Render active input line and read via InputBox cooked mode
-            self._update_footer(self.status or "ready", user_input="", input_mode=True)
-            self.live.refresh()
-            # Update cursor offset to include reserved input lines
-            self.input_box.footer_offset = 2 + self.input_reserved_lines
-            line = self.input_box.read("footer", self.pause)
-            # After read, InputBox.pause resumes; ensure footer placeholder
-            self._update_footer(self.status or "ready", user_input="", input_mode=False)
-            self.live.refresh()
-            return (line or "").strip()
-        if mode == "prompt":
-            with self.pause():
-                try:
-                    from rich.prompt import Prompt
-                    return Prompt.ask("").strip()
-                except Exception:
-                    return input("").strip()
-
-        # Inline mode (default)
-        if not self.live:
-            self.start()
-
-        # Inline cbreak mode using InputBox
-        def on_change(buf: str):
-            # Dynamically grow footer to fit wrapped input when in inline mode
-            from rich.text import Text as _Text
-            opts = self.console.options.update(width=self.console.size.width)
-            lines = self.console.render_lines(_Text(f"> {buf}", style="yellow"), opts)
-            self.input_reserved_lines = max(self._default_reserved_lines, len(lines))
-            self._update_footer(self.status or "ready", user_input=buf, input_mode=True)
-            self.live.refresh()
-
+    def notify(self, message: str, style: str = "cyan"):
+        """Transient info message in footer status."""
         try:
-            return self.input_box.read("inline", self.pause, on_change=on_change)
-        finally:
-            # Restore default reserved lines after inline entry completes
-            self.input_reserved_lines = self._default_reserved_lines
+            self._update_footer(f"[bold {style}]{message}[/bold {style}]")
+            self.live.refresh()
+        except Exception:
+            pass
+
+    def read_input(self, mode: str = "multiline") -> str:
+        """Read user input with IME support.
+
+        - mode="multiline": Multi-line input with Shift+Enter (best IME support, recommended)
+        - mode="prompt":    Standard prompt below the UI (simple fallback)
+        """
+        with self.pause():
+            return input("> ").strip()
+              
 
 
 # Export

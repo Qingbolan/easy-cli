@@ -61,7 +61,6 @@ def main():
     console.print("\nDid you see:")
     console.print("  1. [dim]Ready[/dim] status at top (left-aligned)?")
     console.print("  2. Horizontal line separators?")
-    console.print("  3. [dim]> Type your message...[/dim] input prompt?")
     console.print("  4. [cyan]interactive[/cyan] mode on left?")
     console.print("  5. [dim]Type / for commands[/dim] tip on right?")
     console.print()
