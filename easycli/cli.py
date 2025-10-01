@@ -30,6 +30,12 @@ class ChatApplication:
         model: str = "claude-sonnet-4-20250514",
         log_level: str = "info",
         use_live_display: bool = True,
+        input_mode: str = None,
+        input_label: str = None,
+        input_tips: str = None,
+        input_placeholder: str = None,
+        footer_offset: int = None,
+        input_reserved_lines: int = None,
     ):
         self.logger = ModernLogger(
             name="easycli",
@@ -57,8 +63,23 @@ class ChatApplication:
 
         # Live chat display
         self.use_live_display = use_live_display
+        # Input UI defaults
+        self.input_mode = input_mode or os.getenv("EASYCLI_INPUT_MODE", "footer")
+        self.input_label = input_label or os.getenv("EASYCLI_INPUT_LABEL", "chat")
+        self.input_tips = input_tips or os.getenv("EASYCLI_INPUT_TIPS", "Type / for commands")
+        self.input_placeholder = input_placeholder or os.getenv("EASYCLI_INPUT_PLACEHOLDER", "Type your message...")
+        self.footer_offset = int(footer_offset or int(os.getenv("EASYCLI_FOOTER_OFFSET", "2")))
+        self.input_reserved_lines = int(input_reserved_lines or int(os.getenv("EASYCLI_INPUT_RESERVE", "2")))
         if use_live_display:
-            self.chat_display = LiveChatDisplay(console=self.logger.console)
+            self.chat_display = LiveChatDisplay(
+                console=self.logger.console,
+                mode=self.input_label,
+                left_label=self.input_label,
+                tips=self.input_tips,
+                placeholder=self.input_placeholder,
+                footer_offset=self.footer_offset,
+                input_reserved_lines=self.input_reserved_lines,
+            )
         
         # Register built-in commands
         register_builtin_commands(self.command_registry, self)
@@ -97,23 +118,26 @@ class ChatApplication:
     
     def run_with_live_display(self) -> None:
         """Run with live display mode"""
-        self.chat_display.start()
+        # Use main screen for stability with input footer
+        self.chat_display.start(use_alt_screen=False)
         
         try:
             while self.running:
                 try:
-                    # Stop Live to get input
-                    self.chat_display.stop()
+                    # Read user input inside footer (IME-friendly)
+                    user_input = self.chat_display.read_input(mode=self.input_mode)
 
-                    # Get user input
-                    user_input = Prompt.ask("\n[bold yellow]💬 You[/bold yellow]").strip()
-
-                    # Restart Live
-                    self.chat_display.start()
-                    
                     if not user_input:
                         continue
-                    
+
+                    # Show command list if user just types /
+                    if user_input == "/":
+                        # Show command list below the UI without tearing it down
+                        with self.chat_display.pause():
+                            self.command_registry.show_command_list(self.logger.console)
+                            input("\n[dim]Press Enter to continue...[/dim]")
+                        continue
+
                     # Handle commands
                     if user_input.startswith('/'):
                         self.handle_command(user_input)
@@ -172,14 +196,20 @@ class ChatApplication:
         
         while self.running:
             try:
-                # Get user input
+                # Get user input with command highlighting
                 user_input = Prompt.ask(
-                    "\n[bold yellow]💬 You[/bold yellow]"
+                    "\n[bold yellow]💬 You[/bold yellow] [dim](type [cyan]/[/cyan] to see commands)[/dim]"
                 ).strip()
-                
+
                 if not user_input:
                     continue
-                
+
+                # Show command list if user just types /
+                if user_input == "/":
+                    self.command_registry.show_command_list(self.logger.console)
+                    input("\n[dim]Press Enter to continue...[/dim]")
+                    continue
+
                 # Handle commands
                 if user_input.startswith('/'):
                     self.handle_command(user_input)
@@ -296,14 +326,14 @@ class ChatApplication:
     
     def cleanup(self) -> None:
         """Cleanup before exit."""
-        # Stop live display
+        # Stop live display and show previous terminal history
         if self.use_live_display and hasattr(self, 'chat_display'):
             self.chat_display.stop()
 
         # Auto-save current session
         if self.current_session.messages:
             self.session_manager.save(self.current_session)
-        
+
         self.logger.info("Application stopped")
 
 
@@ -375,6 +405,44 @@ More info: https://github.com/yourusername/easycli
         action="version",
         version="EasyCli v0.2.0"
     )
+    # Input UI options
+    parser.add_argument(
+        "--input-mode",
+        type=str,
+        choices=["footer", "inline", "prompt"],
+        default=os.getenv("EASYCLI_INPUT_MODE", "footer"),
+        help="Input mode: footer (IME-friendly), inline, or prompt"
+    )
+    parser.add_argument(
+        "--footer-offset",
+        type=int,
+        default=int(os.getenv("EASYCLI_FOOTER_OFFSET", "2")),
+        help="Footer input row offset (lines to move up to input line)"
+    )
+    parser.add_argument(
+        "--input-label",
+        type=str,
+        default=os.getenv("EASYCLI_INPUT_LABEL", "chat"),
+        help="Left label on footer bottom row"
+    )
+    parser.add_argument(
+        "--input-tips",
+        type=str,
+        default=os.getenv("EASYCLI_INPUT_TIPS", "Type / for commands"),
+        help="Right tips text on footer bottom row"
+    )
+    parser.add_argument(
+        "--input-placeholder",
+        type=str,
+        default=os.getenv("EASYCLI_INPUT_PLACEHOLDER", "Type your message..."),
+        help="Placeholder text for input line"
+    )
+    parser.add_argument(
+        "--input-reserve-lines",
+        type=int,
+        default=int(os.getenv("EASYCLI_INPUT_RESERVE", "2")),
+        help="Reserved lines for input area when active (prevents overlap)"
+    )
     
     args = parser.parse_args()
 
@@ -440,7 +508,13 @@ More info: https://github.com/yourusername/easycli
             api_key=api_key,
             model=args.model,
             log_level=args.log_level,
-            use_live_display=not args.traditional
+            use_live_display=not args.traditional,
+            input_mode=args.input_mode,
+            input_label=args.input_label,
+            input_tips=args.input_tips,
+            input_placeholder=args.input_placeholder,
+            footer_offset=args.footer_offset,
+            input_reserved_lines=args.input_reserve_lines,
         )
         app.run()
     except Exception as e:

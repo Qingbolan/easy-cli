@@ -172,7 +172,7 @@ class CommandRegistry:
                 table.add_column("Command", style="bold yellow", width=20)
                 table.add_column("Description", style="white")
                 table.add_column("Aliases", style="dim", width=15)
-                
+
                 for cmd_info in self.list_commands(category):
                     aliases = ", ".join(cmd_info.aliases) if cmd_info.aliases else "-"
                     table.add_row(
@@ -180,9 +180,37 @@ class CommandRegistry:
                         cmd_info.description,
                         aliases
                     )
-                
+
                 console.print()
                 console.print(table)
+
+    def show_command_list(self, console: Console):
+        """Show a compact command list (autocomplete style when typing /)"""
+        all_commands = self.list_commands()
+
+        # Sort commands by name
+        all_commands.sort(key=lambda x: x.name)
+
+        # Calculate max command length for alignment
+        max_cmd_len = max(len(cmd.name) for cmd in all_commands)
+
+        console.print()
+        for cmd in all_commands:
+            # Format: /command (aliases)  Description
+            cmd_name = f"/{cmd.name}"
+
+            # Add aliases if any
+            aliases_str = ""
+            if cmd.aliases:
+                aliases_str = f" ({', '.join(cmd.aliases)})"
+
+            # Pad for alignment
+            padding = " " * (max_cmd_len - len(cmd.name) + 2)
+
+            # Print command line
+            console.print(
+                f"[cyan]{cmd_name}[/cyan][dim]{aliases_str}[/dim]{padding}{cmd.description}"
+            )
 
 
 # Create global registry
@@ -215,6 +243,15 @@ def register_builtin_commands(registry: CommandRegistry, app: Any):
         if app.ui.confirm("Are you sure you want to exit?"):
             app.logger.console.print("\n[bold green]👋 Goodbye![/bold green]\n")
             app.running = False
+
+    @registry.command(
+        "bye",
+        description="Exit program (shortcut)",
+        category="System"
+    )
+    def cmd_bye(app, args: str):
+        app.logger.console.print("\n[bold green]👋 Goodbye![/bold green]\n")
+        app.running = False
 
     @registry.command(
         "clear",
