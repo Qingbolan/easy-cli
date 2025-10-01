@@ -1,0 +1,52 @@
+{
+  "en": {
+    "app.title": "My Application",
+    "app.description": "A beautiful CLI application",
+    "welcome": "Welcome",
+    "exit": "Exit",
+    "menu.main": "Main Menu",
+    "menu.settings": "Settings",
+    "settings.language": "Language",
+    "settings.theme": "Theme"
+  },
+  "zh": {
+    "app.title": "我的应用",
+    "app.description": "一个美观的命令行应用",
+    "welcome": "欢迎",
+    "exit": "退出",
+    "menu.main": "主菜单",
+    "menu.settings": "设置",
+    "settings.language": "语言",
+    "settings.theme": "主题"
+  },
+  "es": {
+    "app.title": "Mi Aplicación",
+    "app.description": "Una hermosa aplicación CLI",
+    "welcome": "Bienvenido",
+    "exit": "Salir",
+    "menu.main": "Menú Principal",
+    "menu.settings": "Configuración",
+    "settings.language": "Idioma",
+    "settings.theme": "Tema"
+  },
+  "fr": {
+    "app.title": "Mon Application",
+    "app.description": "Une belle application CLI",
+    "welcome": "Bienvenue",
+    "exit": "Quitter",
+    "menu.main": "Menu Principal",
+    "menu.settings": "Paramètres",
+    "settings.language": "Langue",
+    "settings.theme": "Thème"
+  },
+  "ja": {
+    "app.title": "私のアプリケーション",
+    "app.description": "美しいCLIアプリケーション",
+    "welcome": "ようこそ",
+    "exit": "終了",
+    "menu.main": "メインメニュー",
+    "menu.settings": "設定",
+    "settings.language": "言語",
+    "settings.theme": "テーマ"
+  }
+}
