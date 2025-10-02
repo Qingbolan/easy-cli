@@ -118,7 +118,7 @@ class ChatApplication:
     def run_with_live_display(self) -> None:
         """Run with live display mode with IME-friendly footer input"""
         # Use main screen (no alt screen) for best IME compatibility
-        self.chat_display.start(use_alt_screen=False)
+        self.chat_display.start()
 
         try:
             while self.running:

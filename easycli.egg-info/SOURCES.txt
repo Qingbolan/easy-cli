@@ -15,6 +15,7 @@ easycli/client.py
 easycli/command_manager.py
 easycli/command_system.py
 easycli/i18n.py
+easycli/input_box.py
 easycli/logger.py
 easycli/session.py
 easycli/ui.py

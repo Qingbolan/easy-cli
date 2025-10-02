@@ -103,7 +103,6 @@ def main():
     chat_display = LiveChatDisplay(
         console=console,
         role="Demo Bot",
-        mode="interactive"
     )
 
     # Create simple command registry for demo
@@ -120,12 +119,12 @@ def main():
     def help_cmd(app, args): pass
 
     # Use main screen (no alternate screen) for better IME compatibility
-    chat_display.start(use_alt_screen=False)
+    chat_display.start()
 
     # Use multiline mode for best IME support with Shift+Enter for newlines
     # This allows proper Chinese/Japanese/Korean input and multi-line messages
     def read_input_multiline():
-        return chat_display.read_input(mode="multiline")
+        return chat_display.read_input()
 
     running = True
 
@@ -180,8 +179,10 @@ def main():
     finally:
         # Stop and show goodbye message (terminal history will be visible)
         chat_display.stop()
-        console.print("\n[green]👋 Goodbye! Thanks for trying the demo.[/green]")
-        console.print("[dim]Terminal history is now visible above.[/dim]\n")
+        console.print("\n[green]Goodbye! Thanks for trying the demo.[/green]")
+        # Clear terminal before showing goodbye message
+        import os
+        os.system('clear' if os.name == 'posix' else 'cls')
 
 
 if __name__ == "__main__":

@@ -65,7 +65,7 @@ from .ui_builder import (
     MenuBuilder,
     FormBuilder
 )
-from .chat_display import ChatDisplay, LiveChatDisplay
+from .chat_display import LiveChatDisplay
 
 __version__ = "0.3.0"
 __author__ = "Silan Hu"
