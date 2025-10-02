@@ -367,7 +367,7 @@ client = UniversalAIClient(
 ### Azure OpenAI
 
 ```python
-client = UniversalAIClient(
+client = AIClient(
     api_key="your-key",
     base_url="https://YOUR_RESOURCE.openai.azure.com/openai/deployments/YOUR_DEPLOYMENT",
     model="gpt-4"
@@ -377,7 +377,7 @@ client = UniversalAIClient(
 ### Any Custom API
 
 ```python
-client = UniversalAIClient(
+client = AIClient(
     api_key="your-key",
     base_url="https://your-api.com/v1",
     model="your-model"
@@ -458,12 +458,12 @@ MIT License - see [LICENSE](LICENSE)
 
 Copyright (c) 2024 [Silan Hu](https://silan.tech)
 
-## 👤 Author
+## Author
 
 **Silan Hu**
 
 - Website: [silan.tech](https://silan.tech)
-- GitHub: [@silantech](https://github.com/silantech)
+- GitHub: [@Qingbolan](https://github.com/Qingbolan)
 
 ## 🙏 Acknowledgments
 

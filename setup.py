@@ -7,7 +7,7 @@ long_description = (this_directory / "README.md").read_text(encoding='utf-8')
 
 setup(
     name="silantui",
-    version="0.3.0",
+    version="0.1.1",
     author="Silan Hu",
     author_email="contact@silan.tech",
     description="A modern Terminal UI Framework for Python",
