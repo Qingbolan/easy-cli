@@ -199,6 +199,29 @@ python examples/ai_chat_app.py --preset ollama --model llama2
 python examples/ai_chat_app.py --base-url http://your-api.com/v1 --model your-model
 ```
 
+## 🎬 Showcase
+
+### Interactive Chat Interface
+
+EasyCli provides a beautiful, modern chat interface with real-time streaming, alternate screen mode, and smooth animations:
+
+![Chat Demo 1](https://github.com/qingbolan/Easy-Cli/assets/146652006/chat-demo-1.png)
+*Clean, minimalist chat interface with streaming responses*
+
+![Chat Demo 2](https://github.com/qingbolan/Easy-Cli/assets/146652006/chat-demo-2.png)
+*Real-time message streaming with metadata display*
+
+![Chat Demo 3](https://github.com/qingbolan/Easy-Cli/assets/146652006/chat-demo-3.png)
+*Full conversation flow with markdown rendering*
+
+Features demonstrated:
+- 🎨 Alternate screen mode for isolated UI experience
+- ⚡ Real-time streaming with frame merging
+- 📝 Markdown rendering for formatted responses
+- 🎯 Bottom-aligned chat with scrollable history
+- 💬 Fixed input area with IME support
+- ⏱️ Response timing and metadata display
+
 ## 🎨 UI Components Guide
 
 ### Tables
