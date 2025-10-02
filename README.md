@@ -205,13 +205,13 @@ python examples/ai_chat_app.py --base-url http://your-api.com/v1 --model your-mo
 
 EasyCli provides a beautiful, modern chat interface with real-time streaming, alternate screen mode, and smooth animations:
 
-![Chat Demo 1](https://github.com/qingbolan/Easy-Cli/assets/146652006/chat-demo-1.png)
+![Chat Demo 1](https://github.com/Qingbolan/easy-cli/blob/main/assets/chat-demo-1.png)
 *Clean, minimalist chat interface with streaming responses*
 
-![Chat Demo 2](https://github.com/qingbolan/Easy-Cli/assets/146652006/chat-demo-2.png)
+![Chat Demo 2](https://github.com/Qingbolan/easy-cli/blob/main/assets/chat-demo-2.png)
 *Real-time message streaming with metadata display*
 
-![Chat Demo 3](https://github.com/qingbolan/Easy-Cli/assets/146652006/chat-demo-3.png)
+![Chat Demo 3](https://github.com/Qingbolan/easy-cli/blob/main/assets/chat-demo-3.png)
 *Full conversation flow with markdown rendering*
 
 Features demonstrated:
