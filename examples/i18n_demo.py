@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """
 Internationalization (i18n) Example
-Shows how to use EasyCli with different languages
+Shows how to use SilanTui with different languages
 """
 
-from easycli import UIBuilder, ModernLogger, CommandRegistry
-from easycli.i18n import set_language, get_language, t
+from silantui import UIBuilder, ModernLogger, CommandRegistry
+from silantui.i18n import set_language, get_language, t
 from rich.prompt import Prompt
 
 
@@ -39,7 +39,7 @@ class MultilingualApp:
     
     def show_welcome(self):
         """Show welcome message"""
-        self.logger.console.print(f"\n[bold cyan]{t('welcome')} to EasyCli![/bold cyan]")
+        self.logger.console.print(f"\n[bold cyan]{t('welcome')} to SilanTui![/bold cyan]")
         self.logger.console.print(f"[dim]Current language: {get_language()}[/dim]\n")
         
         # Show available commands
@@ -147,8 +147,8 @@ class MultilingualApp:
 
 def demo_all_languages():
     """Demo all supported languages"""
-    from easycli import ModernLogger
-    from easycli.i18n import Translator
+    from silantui import ModernLogger
+    from silantui.i18n import Translator
     
     logger = ModernLogger(name="lang-demo")
     translator = Translator()
@@ -156,7 +156,7 @@ def demo_all_languages():
     logger.banner(
         project_name="i18n Demo",
         title="Multilingual Support",
-        description="EasyCli supports multiple languages",
+        description="SilanTui supports multiple languages",
         font="slant"
     )
     

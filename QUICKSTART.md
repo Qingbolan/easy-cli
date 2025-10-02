@@ -1,18 +1,18 @@
-# EasyCli - Quick Start Guide
+# SilanTui - Quick Start Guide
 
 ## 🚀 Installation (3 steps)
 
 ```bash
 # 1. Extract
-tar -xzf easycli.tar.gz
-cd easycli
+tar -xzf silantui.tar.gz
+cd silantui
 
 # 2. Install
 pip install -e .
 
 # 3. Run
 export LLM_API_KEY="your-api-key"
-easycli
+silantui
 ```
 
 ## 🎯 First Chat
@@ -20,7 +20,7 @@ easycli
 Once installed, just type:
 
 ```bash
-easycli
+silantui
 ```
 
 Then start chatting! Type `/help` to see all commands.
@@ -31,9 +31,9 @@ Then start chatting! Type `/help` to see all commands.
 
 ```bash
 # Create shortcuts
-easycli --add-alias chat "easycli"
-easycli --add-alias ai "easycli --model claude-sonnet-4-20250514"
-easycli --add-alias code "easycli --system 'You are a coding assistant'"
+silantui --add-alias chat "silantui"
+silantui --add-alias ai "silantui --model claude-sonnet-4-20250514"
+silantui --add-alias code "silantui --system 'You are a coding assistant'"
 
 # Now use them
 chat        # Quick chat
@@ -44,7 +44,7 @@ code        # Coding assistant
 ### Interactive Setup
 
 ```bash
-easycli --setup-aliases
+silantui --setup-aliases
 ```
 
 This will guide you through:
@@ -56,17 +56,17 @@ This will guide you through:
 
 ```bash
 # Quick shortcuts
-easycli --add-alias chat "easycli"
-easycli --add-alias ai "easycli"
+silantui --add-alias chat "silantui"
+silantui --add-alias ai "silantui"
 
 # Model selection
-easycli --add-alias sonnet "easycli --model claude-sonnet-4-20250514"
-easycli --add-alias opus "easycli --model claude-opus-4-20250514"
+silantui --add-alias sonnet "silantui --model claude-sonnet-4-20250514"
+silantui --add-alias opus "silantui --model claude-opus-4-20250514"
 
 # Specialized assistants
-easycli --add-alias code "easycli --system 'You are a coding assistant'"
-easycli --add-alias write "easycli --system 'You are a creative writer'"
-easycli --add-alias teach "easycli --system 'You are a teacher'"
+silantui --add-alias code "silantui --system 'You are a coding assistant'"
+silantui --add-alias write "silantui --system 'You are a creative writer'"
+silantui --add-alias teach "silantui --system 'You are a teacher'"
 ```
 
 ## 💬 In-Chat Commands
@@ -86,7 +86,7 @@ Once in a chat session:
 ## 🐍 Python API
 
 ```python
-from easycli import AIClient, ModernLogger
+from silantui import AIClient, ModernLogger
 
 # Simple usage
 logger = ModernLogger(name="demo")
@@ -99,9 +99,9 @@ response = client.chat_stream_with_logger(
 )
 
 # Command aliases
-from easycli import CommandManager
+from silantui import CommandManager
 cm = CommandManager()
-cm.add_alias("mychat", "easycli")
+cm.add_alias("mychat", "silantui")
 ```
 
 ## 🎨 Three Ways to Use Aliases
@@ -109,7 +109,7 @@ cm.add_alias("mychat", "easycli")
 ### 1. Shell Config (Best for daily use)
 
 ```bash
-easycli --setup-aliases
+silantui --setup-aliases
 # Choose option 3: "Install to shell config"
 source ~/.bashrc  # or ~/.zshrc
 
@@ -122,7 +122,7 @@ code
 ### 2. Executable Scripts (Cross-shell)
 
 ```bash
-easycli --setup-aliases
+silantui --setup-aliases
 # Choose option 4: "Create executable aliases"
 
 # Works in any shell
@@ -133,7 +133,7 @@ ai
 ### 3. Command Line (Quick)
 
 ```bash
-easycli --add-alias myname "easycli --model opus"
+silantui --add-alias myname "silantui --model opus"
 myname  # If in PATH
 ```
 
@@ -150,7 +150,7 @@ myname  # If in PATH
 
 ## 🔑 Get API Key
 
-Visit [Anthropic Console](https://console.anthropic.com/) to get your API key.
+Refer to the project homepage for provider setup details: https://github.com/Qingbolan/silan-tui
 
 ## 🐛 Troubleshooting
 
@@ -161,10 +161,10 @@ Visit [Anthropic Console](https://console.anthropic.com/) to get your API key.
 pip install -e .
 
 # Check installation
-which easycli
+which silantui
 
 # Reinstall if needed
-pip uninstall easycli
+pip uninstall silantui
 pip install -e .
 ```
 
@@ -188,7 +188,7 @@ export PATH="$HOME/.local/bin:$PATH"
 export LLM_API_KEY="your-key"
 
 # Or pass as argument
-easycli --api-key "your-key"
+silantui --api-key "your-key"
 ```
 
 ## 📚 Next Steps
@@ -202,26 +202,26 @@ easycli --api-key "your-key"
 
 1. **Create role-specific commands**:
    ```bash
-   easycli --add-alias debug "easycli --log-level debug"
-   easycli --add-alias teacher "easycli --system 'Explain like I am 5'"
+   silantui --add-alias debug "silantui --log-level debug"
+   silantui --add-alias teacher "silantui --system 'Explain like I am 5'"
    ```
 
 2. **Use shorter names**:
    ```bash
-   easycli --add-alias c "easycli"
-   easycli --add-alias a "easycli --model opus"
+   silantui --add-alias c "silantui"
+   silantui --add-alias a "silantui --model opus"
    ```
 
 3. **Combine options**:
    ```bash
-   easycli --add-alias dev "easycli --model opus --log-level debug"
+   silantui --add-alias dev "silantui --model opus --log-level debug"
    ```
 
 ## 🎉 You're Ready!
 
 Start chatting:
 ```bash
-easycli
+silantui
 ```
 
 Or with your custom command:
@@ -229,4 +229,4 @@ Or with your custom command:
 chat
 ```
 
-Enjoy EasyCli! 🚀
+Enjoy SilanTui! 🚀

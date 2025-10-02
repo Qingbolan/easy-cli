@@ -3,7 +3,7 @@
 Session management example.
 """
 
-from easycli import ChatSession, SessionManager, ChatUI, ModernLogger
+from silantui import ChatSession, SessionManager, ChatUI, ModernLogger
 
 def main():
     logger = ModernLogger(name="session-demo", level="info")

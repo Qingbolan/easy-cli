@@ -6,14 +6,14 @@ this_directory = Path(__file__).parent
 long_description = (this_directory / "README.md").read_text(encoding='utf-8')
 
 setup(
-    name="easycli",
+    name="silantui",
     version="0.3.0",
     author="Silan Hu",
     author_email="contact@silan.tech",
     description="A modern Terminal UI Framework for Python",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/Qingbolan/easycli",
+    url="https://github.com/Qingbolan/silantui",
     project_urls={
         "Homepage": "https://silan.tech",
         "Documentation": "https://github.com/Qingbolan/easy-cli",
@@ -47,11 +47,12 @@ setup(
             "black>=23.0.0",
             "mypy>=1.0.0",
             "ruff>=0.1.0",
+            "openai>=1.0.0",
         ],
     },
     entry_points={
         "console_scripts": [
-            "easycli=easycli.cli:main",
+            "silantui=silantui.cli:main",
         ],
     },
 )

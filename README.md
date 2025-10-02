@@ -1,18 +1,18 @@
-# EasyCli
+# SilanTui
 
 **A Modern Terminal UI Framework for Python**
 
-Build beautiful, interactive command-line applications with ease. EasyCli provides powerful UI components, command management, and extensibility - no AI required (but AI integration is optional and easy).
+Build beautiful, interactive command-line applications with ease. SilanTui provides powerful UI components, command management, and extensibility - no AI required (but AI integration is optional and easy).
 
 > **Author**: [Silan Hu](https://silan.tech)  
 > **License**: MIT
 
 ## 🌍 Internationalization (i18n)
 
-EasyCli supports multiple languages out of the box:
+SilanTui supports multiple languages out of the box:
 
 ```python
-from easycli.i18n import set_language, t
+from silantui.i18n import set_language, t
 
 # Set language
 set_language('zh')  # Chinese
@@ -29,9 +29,9 @@ print(t('command.help')) # Translated command help
 
 See [examples/i18n_demo.py](examples/i18n_demo.py) for a complete example.
 
-## 🎯 What is EasyCli?
+## 🎯 What is SilanTui?
 
-EasyCli is a **UI-first CLI framework** that makes it simple to create professional terminal applications. Think of it as a toolkit for building TUIs (Text User Interfaces) with:
+SilanTui is a **UI-first CLI framework** that makes it simple to create professional terminal applications. Think of it as a toolkit for building TUIs (Text User Interfaces) with:
 
 - Beautiful, Rich-based components
 - Intuitive command systems
@@ -69,14 +69,14 @@ EasyCli is a **UI-first CLI framework** that makes it simple to create professio
 ## 📦 Installation
 
 ```bash
-pip install easycli
+pip install silantui
 ```
 
 Or from source:
 
 ```bash
-git clone https://github.com/yourusername/easycli.git
-cd easycli
+git clone https://github.com/yourusername/silantui.git
+cd silantui
 pip install -e .
 ```
 
@@ -85,7 +85,7 @@ pip install -e .
 ### Example 1: Simple Dashboard
 
 ```python
-from easycli import ModernLogger, UIBuilder
+from silantui import ModernLogger, UIBuilder
 
 logger = ModernLogger(name="dashboard")
 ui = UIBuilder(console=logger.console)
@@ -107,7 +107,7 @@ ui.panel("Welcome", "This is your dashboard!") \
 ### Example 2: Interactive Menu
 
 ```python
-from easycli import UIBuilder
+from silantui import UIBuilder
 
 ui = UIBuilder()
 
@@ -124,7 +124,7 @@ print(f"You selected: {choice}")
 ### Example 3: Custom Commands
 
 ```python
-from easycli import CommandRegistry, ModernLogger
+from silantui import CommandRegistry, ModernLogger
 
 registry = CommandRegistry()
 logger = ModernLogger(name="app")
@@ -145,8 +145,8 @@ registry.show_help(logger.console)
 ### Example 4: AI Chat (Optional)
 
 ```python
-from easycli import LiveChatDisplay
-from easycli.ai_client import UniversalAIClient
+from silantui import LiveChatDisplay
+from silantui.integrations.universal_client import UniversalAIClient
 
 # Works with OpenAI, Ollama, or any compatible API
 client = UniversalAIClient(
@@ -172,7 +172,7 @@ display.stop()
 
 ## 📚 Complete Examples
 
-EasyCli includes full-featured example applications:
+SilanTui includes full-featured example applications:
 
 ### 1. Dashboard App
 ```bash
@@ -203,7 +203,7 @@ python examples/ai_chat_app.py --base-url http://your-api.com/v1 --model your-mo
 
 ### Interactive Chat Interface
 
-EasyCli provides a beautiful, modern chat interface with real-time streaming, alternate screen mode, and smooth animations:
+SilanTui provides a beautiful, modern chat interface with real-time streaming, alternate screen mode, and smooth animations:
 
 ![Chat Demo 1](https://github.com/Qingbolan/easy-cli/blob/main/assets/chat-demo-1.png)
 *Clean, minimalist chat interface with streaming responses*
@@ -227,7 +227,7 @@ Features demonstrated:
 ### Tables
 
 ```python
-from easycli import UIBuilder
+from silantui import UIBuilder
 
 ui = UIBuilder()
 
@@ -277,7 +277,7 @@ layout = ui.layout("root") \
 ### Live Display
 
 ```python
-from easycli import LiveChatDisplay
+from silantui import LiveChatDisplay
 
 display = LiveChatDisplay()
 display.start()
@@ -295,7 +295,7 @@ display.stop()
 ### Method 1: Decorator (Recommended)
 
 ```python
-from easycli import CommandRegistry
+from silantui import CommandRegistry
 
 registry = CommandRegistry()
 
@@ -313,7 +313,7 @@ def deploy_command(app, args):
 ### Method 2: Builder Pattern
 
 ```python
-from easycli import CommandBuilder
+from silantui import CommandBuilder
 
 cmd = CommandBuilder("backup") \
     .description("Backup data") \
@@ -328,7 +328,7 @@ registry.register(cmd)
 ### Method 3: Quick Register
 
 ```python
-from easycli import quick_command
+from silantui import quick_command
 
 quick_command(
     registry,
@@ -341,12 +341,12 @@ quick_command(
 
 ## 🤖 AI Integration (Optional)
 
-EasyCli supports multiple AI providers through a universal client:
+SilanTui supports multiple AI providers through a universal client:
 
 ### OpenAI
 
 ```python
-from easycli.ai_client import UniversalAIClient
+from silantui.integrations.universal_client import UniversalAIClient
 
 client = UniversalAIClient(
     api_key="sk-...",
@@ -387,7 +387,7 @@ client = UniversalAIClient(
 ## 🎨 Custom Themes
 
 ```python
-from easycli import UITheme, UIBuilder
+from silantui import UITheme, UIBuilder
 
 theme = UITheme(
     primary="magenta",
@@ -408,7 +408,7 @@ ui = UIBuilder(theme=theme)
 
 ## 🎯 Use Cases
 
-EasyCli is perfect for:
+SilanTui is perfect for:
 
 - **System Administration Tools** - Server management, monitoring dashboards
 - **Development Tools** - Build tools, deployment scripts, code generators
@@ -419,7 +419,7 @@ EasyCli is perfect for:
 ## 🏗️ Architecture
 
 ```
-EasyCli Framework
+SilanTui Framework
 ├── Core UI Components
 │   ├── ModernLogger      # Logging & output
 │   ├── UIBuilder         # Component builder
@@ -444,7 +444,7 @@ EasyCli Framework
 
 ## 🤝 Contributing
 
-Contributions are welcome! EasyCli is designed to be a general-purpose UI framework.
+Contributions are welcome! SilanTui is designed to be a general-purpose UI framework.
 
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/amazing-feature`)
@@ -491,7 +491,7 @@ Copyright (c) 2024 [Silan Hu](https://silan.tech)
 **Build beautiful CLI applications with ease!** 🚀
 
 ```bash
-pip install easycli
+pip install silantui
 ```
 
 Made with ❤️ by [Silan Hu](https://silan.tech)

@@ -3,7 +3,7 @@
 Command Management Example - Demonstrates how to manage custom commands
 """
 
-from easycli import CommandManager, ModernLogger
+from silantui import CommandManager, ModernLogger
 
 def main():
     logger = ModernLogger(name="command-demo", level="info")
@@ -116,7 +116,7 @@ def main():
     
     logger.highlight("Interactive Setup")
     logger.console.print("\nUse the interactive setup for easier configuration:")
-    logger.console.print("[yellow]easycli --setup-commands[/yellow]")
+    logger.console.print("[yellow]silantui --setup-commands[/yellow]")
     logger.print()
     
     logger.success("Command management demo completed!")

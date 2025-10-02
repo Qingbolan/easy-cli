@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
 Pure UI Framework Example - Data Dashboard
-Demonstrates EasyCli as a pure UI framework, no AI required
+Demonstrates SilanTui as a pure UI framework, no AI required
 """
 
-from easycli import (
+from silantui import (
     ModernLogger,
     UIBuilder,
     QuickUI,
@@ -69,7 +69,7 @@ class DataDashboard:
         self.logger.banner(
             project_name="Dashboard",
             title="Data Dashboard",
-            description="Demonstrates EasyCli UI framework's powerful features",
+            description="Demonstrates SilanTui UI framework's powerful features",
             font="slant"
         )
 
@@ -77,7 +77,7 @@ class DataDashboard:
         welcome_panel = self.ui.panel(
             "Welcome to Data Dashboard",
             "This is a pure UI example, no AI features required.\n"
-            "Demonstrates EasyCli as a general-purpose UI framework.\n\n"
+            "Demonstrates SilanTui as a general-purpose UI framework.\n\n"
             "[cyan]Enter commands to start:[/cyan]\n"
             "  • /stats - View statistics\n"
             "  • /chart - View charts\n"

@@ -4,7 +4,7 @@ Custom UI components demonstration.
 """
 
 import time
-from easycli import ModernLogger
+from silantui import ModernLogger
 
 def main():
     logger = ModernLogger(name="ui-demo", level="info")

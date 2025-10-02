@@ -1,11 +1,11 @@
 # Internationalization (i18n) Guide
 
-EasyCli provides built-in support for internationalization, making it easy to build multilingual CLI applications.
+SilanTui provides built-in support for internationalization, making it easy to build multilingual CLI applications.
 
 ## Quick Start
 
 ```python
-from easycli.i18n import set_language, t
+from silantui.i18n import set_language, t
 
 # Set language (default is 'en')
 set_language('zh')  # Chinese
@@ -21,7 +21,7 @@ print(t('error'))         # Translated error
 
 ## Supported Languages
 
-Out of the box, EasyCli supports:
+Out of the box, SilanTui supports:
 
 - **English (en)** - Default
 - **Chinese (zh)** - 中文
@@ -34,7 +34,7 @@ Out of the box, EasyCli supports:
 ### 1. Simple Translation
 
 ```python
-from easycli.i18n import t, set_language
+from silantui.i18n import t, set_language
 
 # Set language
 set_language('zh')
@@ -48,7 +48,7 @@ success_msg = t('success')        # "成功"
 ### 2. Format Arguments
 
 ```python
-from easycli.i18n import t
+from silantui.i18n import t
 
 # Translation with placeholders
 msg = t('command.not_found', 'deploy')
@@ -59,8 +59,8 @@ msg = t('command.not_found', 'deploy')
 ### 3. Using with UIBuilder
 
 ```python
-from easycli import UIBuilder
-from easycli.i18n import t, set_language
+from silantui import UIBuilder
+from silantui.i18n import t, set_language
 
 ui = UIBuilder()
 set_language('zh')
@@ -78,7 +78,7 @@ ui.error(t('error'))
 #### Method 1: Add to Existing Translator
 
 ```python
-from easycli.i18n import get_translator
+from silantui.i18n import get_translator
 
 translator = get_translator()
 
@@ -96,7 +96,7 @@ translator.add_translations('en', {
 #### Method 2: Load from JSON File
 
 ```python
-from easycli.i18n import get_translator
+from silantui.i18n import get_translator
 from pathlib import Path
 
 translator = get_translator()
@@ -120,7 +120,7 @@ translator.load_from_file(Path('translations.json'))
 ### Create Custom Translator
 
 ```python
-from easycli.i18n import Translator
+from silantui.i18n import Translator
 
 # Create with custom translations
 translator = Translator(
@@ -194,8 +194,8 @@ print(translator.get('key1'))  # "value1"
 ## Complete Example
 
 ```python
-from easycli import UIBuilder, ModernLogger, CommandRegistry
-from easycli.i18n import set_language, t, get_translator
+from silantui import UIBuilder, ModernLogger, CommandRegistry
+from silantui.i18n import set_language, t, get_translator
 from rich.prompt import Prompt
 
 
@@ -261,7 +261,7 @@ if __name__ == "__main__":
 
 ```python
 import os
-from easycli.i18n import set_language
+from silantui.i18n import set_language
 
 # Detect from system
 system_lang = os.getenv('LANG', 'en_US').split('_')[0]
@@ -271,8 +271,8 @@ set_language(system_lang if system_lang in ['en', 'zh', 'es', 'fr', 'ja'] else '
 ### User Selection
 
 ```python
-from easycli import UIBuilder
-from easycli.i18n import set_language
+from silantui import UIBuilder
+from silantui.i18n import set_language
 
 ui = UIBuilder()
 
@@ -330,7 +330,7 @@ def main():
 ### 4. Provide Fallbacks
 
 ```python
-# EasyCli automatically falls back to English
+# SilanTui automatically falls back to English
 # if a key is missing in the current language
 set_language('zh')
 print(t('some.missing.key'))  # Falls back to English if not in Chinese
@@ -339,7 +339,7 @@ print(t('some.missing.key'))  # Falls back to English if not in Chinese
 ## Testing Translations
 
 ```python
-from easycli.i18n import Translator
+from silantui.i18n import Translator
 
 def test_translations():
     translator = Translator()
@@ -359,7 +359,7 @@ test_translations()
 ## Adding New Languages
 
 ```python
-from easycli.i18n import get_translator
+from silantui.i18n import get_translator
 
 translator = get_translator()
 
@@ -378,7 +378,7 @@ translator.save_to_file('translations.json')
 
 ## Summary
 
-EasyCli's i18n system provides:
+SilanTui's i18n system provides:
 
 ✅ **Built-in Support** - 5 languages out of the box  
 ✅ **Easy Integration** - Simple `t()` function  
@@ -391,7 +391,7 @@ EasyCli's i18n system provides:
 **Start building multilingual CLI applications today!**
 
 ```python
-from easycli.i18n import set_language, t
+from silantui.i18n import set_language, t
 
 set_language('zh')
 print(t('welcome'))  # 欢迎

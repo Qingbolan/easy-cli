@@ -3,7 +3,7 @@
 Live Display and Markdown Demo - Demonstrates fixed input box and Markdown rendering
 """
 
-from easycli import ModernLogger, ChatDisplay, LiveChatDisplay
+from silantui import ModernLogger, ChatDisplay, LiveChatDisplay
 from rich.markdown import Markdown
 import time
 
@@ -172,11 +172,11 @@ def demo_markdown_rendering():
     logger.section("Markdown Rendering Example")
 
     markdown_text = """
-# Welcome to EasyCli
+# Welcome to SilanTui
 
 ## Features
 
-EasyCli is a modern CLI framework with the following features:
+SilanTui is a modern CLI framework with the following features:
 
 ### 1. Beautiful Terminal UI
 
@@ -195,7 +195,7 @@ Supports LLM API, providing:
 ### 3. Code Examples
 
 ```python
-from easycli import AIClient, ModernLogger
+from silantui import AIClient, ModernLogger
 
 logger = ModernLogger(name="demo")
 client = AIClient(api_key="your-key", logger=logger)
@@ -209,8 +209,8 @@ print(response)
 Installation is simple:
 
 ```bash
-pip install easycli
-easycli
+pip install silantui
+silantui
 ```
 
 ---
@@ -229,9 +229,9 @@ def greet_cmd(app, args):
 
 ### More Information
 
-Visit the [documentation](https://github.com/yourusername/easycli) to learn more.
+Visit the [documentation](https://github.com/yourusername/silantui) to learn more.
 
-> **Tip**: EasyCli makes CLI development simple and fun!
+> **Tip**: SilanTui makes CLI development simple and fun!
 """
 
     # Render Markdown
@@ -256,7 +256,7 @@ def main():
 
     logger.banner(
         project_name="Demos",
-        title="EasyCli Display Features Demo",
+        title="SilanTui Display Features Demo",
         description="Fixed input box + Markdown rendering",
         font="slant"
     )
@@ -298,7 +298,7 @@ def main():
     logger.console.print()
     logger.highlight("All demos complete!")
     logger.console.print()
-    logger.console.print("[bold green]✨ EasyCli New Features:[/bold green]")
+    logger.console.print("[bold green]✨ SilanTui New Features:[/bold green]")
     logger.console.print("  1. ✅ Fixed bottom input box")
     logger.console.print("  2. ✅ Complete Markdown rendering")
     logger.console.print("  3. ✅ Real-time streaming display")

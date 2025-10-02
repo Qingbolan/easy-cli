@@ -3,7 +3,7 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "easycli"
+name = "silantui"
 version = "0.1.0"
 description = "A modern, elegant CLI framework for building AI chat applications"
 readme = "README.md"
@@ -30,6 +30,7 @@ dependencies = [
     "rich>=13.0.0",
     "pyfiglet>=0.8.0",
     "anthropic>=0.18.0",
+    "openai>=1.0.0",
 ]
 
 [project.optional-dependencies]
@@ -42,13 +43,13 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/Qingbolan/easycli"
-Documentation = "https://github.com/Qingbolan/easycli#readme"
-Repository = "https://github.com/Qingbolan/easycli"
-Issues = "https://github.com/Qingbolan/easycli/issues"
+Homepage = "https://github.com/Qingbolan/silantui"
+Documentation = "https://github.com/Qingbolan/silantui#readme"
+Repository = "https://github.com/Qingbolan/silantui"
+Issues = "https://github.com/Qingbolan/silantui/issues"
 
 [project.scripts]
-easycli = "easycli.cli:main"
+silantui = "silantui.cli:main"
 
 [tool.black]
 line-length = 100

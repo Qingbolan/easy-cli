@@ -3,9 +3,9 @@
 Custom Commands and UI Example - Demonstrates how to easily add custom commands and UI components
 """
 
-from easycli import ModernLogger, ChatSession
-from easycli.command_system import CommandRegistry, CommandBuilder, quick_command
-from easycli.ui_builder import UIBuilder, QuickUI, UITheme
+from silantui import ModernLogger, ChatSession
+from silantui.core.command_system import CommandRegistry, CommandBuilder, quick_command
+from silantui.ui.builder import UIBuilder, QuickUI, UITheme
 
 
 def main():

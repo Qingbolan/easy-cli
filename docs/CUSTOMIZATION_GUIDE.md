@@ -1,8 +1,8 @@
-# EasyCli Customization Guide
+# SilanTui Customization Guide
 
 ## 🎯 Overview
 
-EasyCli v0.2.0 introduces powerful command systems and UI builders, making it incredibly convenient to:
+SilanTui v0.2.0 introduces powerful command systems and UI builders, making it incredibly convenient to:
 
 1. **Add Custom Commands** - 3 methods, super simple
 2. **Build Beautiful UIs** - Method chaining, WYSIWYG
@@ -24,7 +24,7 @@ EasyCli v0.2.0 introduces powerful command systems and UI builders, making it in
 The simplest and most direct approach:
 
 ```python
-from easycli import CommandRegistry
+from silantui import CommandRegistry
 
 registry = CommandRegistry()
 
@@ -48,7 +48,7 @@ registry.execute("greet", app, "John")
 Suitable for scenarios requiring dynamic command construction:
 
 ```python
-from easycli import CommandBuilder
+from silantui import CommandBuilder
 
 def my_handler(app, args: str):
     app.logger.success(f"Processing args: {args}")
@@ -70,7 +70,7 @@ registry.register(cmd)
 One line of code:
 
 ```python
-from easycli import quick_command
+from silantui import quick_command
 
 quick_command(
     registry,
@@ -84,7 +84,7 @@ quick_command(
 ### Using Custom Commands in Your Application
 
 ```python
-from easycli import ChatApplication
+from silantui import ChatApplication
 
 class MyApp(ChatApplication):
     def __init__(self, *args, **kwargs):
@@ -115,7 +115,7 @@ class MyApp(ChatApplication):
 ### UIBuilder - Core Builder
 
 ```python
-from easycli import UIBuilder
+from silantui import UIBuilder
 
 ui = UIBuilder()
 ```
@@ -216,7 +216,7 @@ ui.layout("root") \
 ### QuickUI - Quick Components
 
 ```python
-from easycli import QuickUI
+from silantui import QuickUI
 
 quick = QuickUI()
 
@@ -258,7 +258,7 @@ quick.three_column_layout(
 ### Custom Theme
 
 ```python
-from easycli import UIBuilder, UITheme
+from silantui import UIBuilder, UITheme
 
 # Create custom theme
 theme = UITheme(
@@ -282,7 +282,7 @@ ui.panel("Title", "Content").border(theme.primary).show()
 ### Example 1: Create a Todo Manager
 
 ```python
-from easycli import CommandRegistry, UIBuilder, ChatSession
+from silantui import CommandRegistry, UIBuilder, ChatSession
 
 class TodoApp:
     def __init__(self):
@@ -351,7 +351,7 @@ app.run()
 ### Example 2: Create a Configuration Wizard
 
 ```python
-from easycli import UIBuilder, QuickUI
+from silantui import UIBuilder, QuickUI
 
 def config_wizard():
     ui = UIBuilder()
@@ -522,7 +522,7 @@ ui = UIBuilder(theme=APP_THEME)
 python examples/custom_commands_ui.py
 
 # In your project
-from easycli import CommandRegistry, UIBuilder
+from silantui import CommandRegistry, UIBuilder
 
 registry = CommandRegistry()
 ui = UIBuilder()
@@ -532,6 +532,6 @@ ui = UIBuilder()
 
 ---
 
-**Now you can easily extend EasyCli!** 🎉
+**Now you can easily extend SilanTui!** 🎉
 
 Check out `examples/custom_commands_ui.py` for more inspiration.

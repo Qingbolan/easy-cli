@@ -16,8 +16,8 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from rich.console import Console
-from easycli.chat_display import LiveChatDisplay
-from easycli.command_system import CommandRegistry
+from silantui.ui.chat_display import LiveChatDisplay
+from silantui.core.command_system import CommandRegistry
 
 
 # Sample responses for demo

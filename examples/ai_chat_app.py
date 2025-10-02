@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
 AI Chat Application - Optional AI chat functionality
-This is just an example application of EasyCli, not a core feature
+This is just an example application of SilanTui, not a core feature
 """
 
-from easycli import (
+from silantui import (
     ModernLogger,
     UIBuilder,
     CommandRegistry,
@@ -12,14 +12,17 @@ from easycli import (
     ChatSession,
     SessionManager,
 )
-from easycli.ai_client import UniversalAIClient, get_preset_config
+from silantui.integrations.universal_client import (
+    AIClient,
+    get_preset_config,
+)
 from pathlib import Path
 from rich.prompt import Prompt
 import time
 
 
 class AIChatApp:
-    """AI Chat Application - Demonstrates how to build AI apps with EasyCli"""
+    """AI Chat Application - Demonstrates how to build AI apps with SilanTui"""
 
     def __init__(
         self,
@@ -33,7 +36,7 @@ class AIChatApp:
         self.registry = CommandRegistry()
 
         # AI client
-        self.ai_client = UniversalAIClient(
+        self.ai_client = AIClient(
             api_key=api_key,
             base_url=base_url,
             model=model,
@@ -41,7 +44,7 @@ class AIChatApp:
 
         # Session management
         self.session_manager = SessionManager(
-            base_dir=Path.home() / ".easycli" / "ai_sessions"
+            base_dir=Path.home() / ".silantui" / "ai_sessions"
         )
         self.current_session = ChatSession()
 
@@ -110,7 +113,7 @@ class AIChatApp:
         self.logger.banner(
             project_name="AI Chat",
             title="AI Chat Assistant",
-            description="AI chat application built with EasyCli",
+            description="AI chat application built with SilanTui",
             font="slant"
         )
 
@@ -279,7 +282,7 @@ def main():
     import argparse
     import os
 
-    parser = argparse.ArgumentParser(description="AI Chat - EasyCli Example Application")
+    parser = argparse.ArgumentParser(description="AI Chat - SilanTui Example Application")
     parser.add_argument("--api-key", help="API Key")
     parser.add_argument("--base-url", help="API Base URL")
     parser.add_argument("--model", default="gpt-3.5-turbo", help="Model name")

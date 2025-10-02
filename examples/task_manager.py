@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
 Task Manager
-Demonstrates EasyCli as a pure UI application framework
+Demonstrates SilanTui as a pure UI application framework
 """
 
-from easycli import ModernLogger, UIBuilder, CommandRegistry
+from silantui import ModernLogger, UIBuilder, CommandRegistry
 from datetime import datetime
 import json
 from pathlib import Path
@@ -46,7 +46,7 @@ class TaskManager:
 
         self.tasks = []
         self.next_id = 1
-        self.data_file = Path.home() / ".easycli" / "tasks.json"
+        self.data_file = Path.home() / ".silantui" / "tasks.json"
         self.running = True
 
         self.load_tasks()

@@ -1,4 +1,4 @@
-# EasyCli Chat Display Demos
+# SilanTui Chat Display Demos
 
 This directory contains demonstration scripts showcasing the new minimalist chat interface design.
 
@@ -80,7 +80,7 @@ python demo/interactive_chat_demo.py
 ### Display Layout
 ```
 ┌─────────────────────────────────────────────────────────┐
-│                  Header (EasyCli title)                 │
+│                  Header (SilanTui title)                 │
 ├─────────────────────────────────────────────────────────┤
 │                                                         │
 │  > User message with white background                   │
@@ -114,8 +114,8 @@ Cycle speed: ~3 frames per second
 
 ## Requirements
 
-All demos use the EasyCli library components:
-- `easycli.chat_display.LiveChatDisplay`
+All demos use the SilanTui library components:
+- `silantui.ui.chat_display.LiveChatDisplay`
 - `rich` library for terminal UI
 
 Make sure you have the parent directory in your Python path or run from the project root.
@@ -180,4 +180,4 @@ After exploring the demos, you can:
 
 ## License
 
-Part of the EasyCli project. See parent directory for license information.
+Part of the SilanTui project. See parent directory for license information.

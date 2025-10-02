@@ -20,7 +20,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from rich.console import Console
 from rich.prompt import Prompt
-from easycli.chat_display import LiveChatDisplay
+from silantui.ui.chat_display import LiveChatDisplay
 
 
 def simulate_streaming_response(text: str, delay: float = 0.03):
