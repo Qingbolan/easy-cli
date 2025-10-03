@@ -1,8 +1,9 @@
 from typing import Optional, Callable
 
-from rich.console import Group
+from rich.console import Group, Console
 from rich.text import Text
 from rich.table import Table
+from rich.rule import Rule
 
 
 class InputBox:
@@ -49,7 +50,7 @@ class InputBox:
         )
 
         return Group(
-            Text(""),  # Empty line for spacing
-            Text(""),  # Empty line for spacing
+            Rule(style="yellow", characters="─"),  # Top separator line (full width)
             info_line,
+            Rule(style="yellow", characters="─"),  # Bottom separator line (full width)
         )

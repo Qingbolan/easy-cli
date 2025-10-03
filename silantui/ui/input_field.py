@@ -11,10 +11,11 @@ import termios
 from typing import Optional, Callable
 from dataclasses import dataclass
 
-from rich.console import Console, RenderableType
+from rich.console import Console, RenderableType, Group as RichGroup
 from rich.text import Text
 from rich.panel import Panel
 from rich.box import ROUNDED
+from rich.rule import Rule
 
 
 @dataclass
@@ -81,11 +82,11 @@ class InputField:
         if status != "ready":
             display.append(f"  [{status}]", style="dim cyan")
 
-        return Panel(
+        # Use full-width lines instead of Panel
+        return RichGroup(
+            Rule(style="yellow", characters="─"),
             display,
-            box=ROUNDED,
-            border_style="yellow" if self._active else "dim",
-            padding=(0, 1),
+            Rule(style="yellow", characters="─"),
         )
 
     def clear(self):
