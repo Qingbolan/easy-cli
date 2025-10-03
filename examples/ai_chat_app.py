@@ -139,7 +139,7 @@ class AIChatApp:
                 try:
                     # Stop display to get input
                     self.chat_display.stop()
-                    user_input = Prompt.ask("\n[bold yellow]💬 You[/bold yellow]").strip()
+                    user_input = Prompt.ask("\n[bold yellow]>You[/bold yellow]").strip()
                     self.chat_display.start()
 
                     if not user_input:
@@ -208,7 +208,7 @@ class AIChatApp:
 
         while self.running:
             try:
-                user_input = Prompt.ask("\n[bold yellow]💬 You[/bold yellow]").strip()
+                user_input = Prompt.ask("\n[bold yellow]> You[/bold yellow]").strip()
 
                 if not user_input:
                     continue

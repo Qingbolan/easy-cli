@@ -80,7 +80,7 @@ class ChatDisplay:
         # Setup input prompt
         self.layout["input"].update(
             Panel(
-                "💬 [yellow]Type message...[/yellow] (Press Enter to send, /help for commands)",
+                "> [yellow]Type message...[/yellow] (Press Enter to send, /help for commands)",
                 style="yellow",
                 box=ROUNDED
             )
@@ -160,7 +160,7 @@ class ChatDisplay:
     def show(self):
         self.console.print(self.layout)
 
-    def get_input(self, prompt_text: str = "💬 You") -> str:
+    def get_input(self, prompt_text: str = "> You") -> str:
         self.console.print()
         return self.console.input(f"[bold yellow]{prompt_text}[/bold yellow] ").strip()
 
@@ -216,7 +216,7 @@ class LiveChatDisplay:
         # Interactive input field
         self.input_field = InputField(
             console=self.console,
-            prompt="💬 ",
+            prompt="> ",
             placeholder="Type your message... (Enter to send, / for commands)",
         )
 
@@ -251,9 +251,9 @@ class LiveChatDisplay:
         if msg._render_cache is not None:
             return msg._render_cache
         if msg.role == "user":
-            # User message: white background with blue text
-            user_text = Text(f" {msg.content} ", style="blue on white")
-            r: RenderableType = Padding(user_text, (0, 2))
+            # User message: > prefix included in light background
+            user_text = Text(f"> {msg.content}", style="black on grey93")
+            r: RenderableType = user_text
         else:
             # Assistant message: metadata header + markdown body
             header = Text()

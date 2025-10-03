@@ -199,7 +199,7 @@ class ChatApplication:
             try:
                 # Get user input with command highlighting
                 user_input = Prompt.ask(
-                    "\n[bold yellow]💬 You[/bold yellow] [dim](type [cyan]/[/cyan] to see commands)[/dim]"
+                    "\n[bold yellow]> You[/bold yellow] [dim](type [cyan]/[/cyan] to see commands)[/dim]"
                 ).strip()
 
                 if not user_input:

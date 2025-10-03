@@ -120,7 +120,7 @@ class ChatUI:
     def show_input_prompt(self) -> Panel:
         """Create input prompt panel."""
         text = Text()
-        text.append("💬 ", style="bold yellow")
+        text.append("> ", style="bold yellow")
         text.append("Type your message", style="white")
         text.append(" | ", style="dim")
         text.append("/help", style="cyan")
