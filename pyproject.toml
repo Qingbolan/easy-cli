@@ -4,19 +4,20 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "silantui"
-version = "0.1.1"
-description = "A modern, elegant CLI framework for building AI chat applications"
+version = "0.4.0"
+description = "A modern Terminal UI framework powered by Textual - Build beautiful interactive CLI applications"
 readme = "README.md"
 requires-python = ">=3.8"
 license = {text = "MIT"}
 authors = [
     {name = "Silan Hu", email = "silan.hu@u.nus.edu"}
 ]
-keywords = ["ai", "cli", "chat", "anthropic", "claude", "terminal", "rich", "easy"]
+keywords = ["ai", "cli", "chat", "tui", "textual", "terminal", "anthropic", "claude", "openai", "interactive"]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
     "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Software Development :: User Interfaces",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.8",
@@ -24,9 +25,12 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Environment :: Console",
+    "Framework :: Textual",
 ]
 
 dependencies = [
+    "textual>=0.47.0",
     "rich>=13.0.0",
     "pyfiglet>=0.8.0",
     "anthropic>=0.18.0",

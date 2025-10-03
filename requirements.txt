@@ -1,4 +1,12 @@
+# Core TUI Framework
+textual>=0.47.0
+
+# Rich for text formatting (used by Textual)
 rich>=13.0.0
+
+# ASCII art for banners
 pyfiglet>=0.8.0
+
+# Optional AI integrations
+anthropic>=0.18.0
 openai>=1.0.0
-prompt_toolkit>=3.0.36

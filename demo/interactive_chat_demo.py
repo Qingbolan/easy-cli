@@ -3,7 +3,7 @@
 Interactive Chat Demo - Try the chat interface yourself
 
 This is an interactive demo where you can type messages and see
-simulated AI responses with the new minimalist interface.
+simulated AI responses with the modern Textual interface.
 """
 
 import os
@@ -15,8 +15,7 @@ from pathlib import Path
 # Add parent directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from rich.console import Console
-from silantui.ui.chat_display import LiveChatDisplay
+from silantui.ui.textual_chat import ChatApp
 from silantui.core.command_system import CommandRegistry
 
 
@@ -78,90 +77,34 @@ def simulate_streaming(text: str, delay: float = 0.04):
         time.sleep(delay)
 
 
+class DemoChatApp(ChatApp):
+    """Demo chat app with simulated responses"""
+
+    async def simulate_response(self, user_message: str):
+        """Generate and stream simulated response"""
+        import asyncio
+
+        response = generate_demo_response(user_message)
+
+        # Start streaming
+        self.start_streaming()
+
+        # Stream word by word asynchronously
+        words = response.split()
+        for i, word in enumerate(words):
+            chunk = word + (" " if i < len(words) - 1 else "")
+            self.append_streaming(chunk)
+            await asyncio.sleep(0.04)  # Non-blocking delay
+
+        # Finish streaming (不带参数，内容已经通过 append_streaming 累积了)
+        self.finish_streaming()
+
+
 def main():
     """Main interactive demo"""
-    console = Console()
-
-    # Initialize chat display
-    chat_display = LiveChatDisplay(
-        console=console,
-        role="Demo Bot",
-    )
-
-    # Create simple command registry for demo
-    demo_commands = CommandRegistry()
-
-    # Register demo commands
-    @demo_commands.command("exit", description="Exit the demo", category="Demo")
-    def exit_cmd(app, args): pass
-
-    @demo_commands.command("new", description="Clear chat history", category="Demo")
-    def new_cmd(app, args): pass
-
-    @demo_commands.command("help", description="Show help", category="Demo")
-    def help_cmd(app, args): pass
-
-    # Use main screen (no alternate screen) for better IME compatibility
-    chat_display.start()
-
-    # Use multiline mode for best IME support with Shift+Enter for newlines
-    # This allows proper Chinese/Japanese/Korean input and multi-line messages
-    def read_input_multiline():
-        return chat_display.read_input()
-
-    running = True
-
-    try:
-        while running:
-            # Read user input with multi-line support and IME
-            user_input = read_input_multiline()
-
-            if not user_input:
-                continue
-
-            # Show command list if user just types /
-            if user_input == "/":
-                with chat_display.pause():
-                    demo_commands.show_command_list(console)
-                    input("\n[dim]Press Enter to continue...[/dim]")
-                continue
-
-            # Handle commands
-            if user_input.lower() == "/exit" or user_input.lower() == "/bye":
-                # Stop display to show terminal history
-                break
-
-            if user_input.lower() == "/new":
-                chat_display.clear_messages()
-                time.sleep(0.5)
-                continue
-
-            if user_input.lower() == "/help":
-                with chat_display.pause():
-                    demo_commands.show_command_list(console)
-                    input("\n[dim]Press Enter to continue...[/dim]")
-                continue
-
-            # Add user message
-            chat_display.add_user_message(user_input)
-            time.sleep(0.3)
-
-            # Generate and stream response
-            chat_display.start_assistant_message()
-
-            response = generate_demo_response(user_input)
-            for chunk in simulate_streaming(response):
-                chat_display.append_streaming(chunk)
-
-            chat_display.finish_assistant_message()
-            time.sleep(0.5)
-
-    except KeyboardInterrupt:
-        pass
-
-    finally:
-        chat_display.stop()
-        console.print("\n[green]Goodbye! Thanks for trying the demo.[/green]")
+    # Run the Textual app
+    app = DemoChatApp(role="Demo Bot")
+    app.run()
 
 
 if __name__ == "__main__":

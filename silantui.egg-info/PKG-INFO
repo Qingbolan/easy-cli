@@ -1,3 +1,48 @@
+Metadata-Version: 2.4
+Name: silantui
+Version: 0.4.0
+Summary: A modern Terminal UI framework powered by Textual - Build beautiful interactive CLI applications
+Home-page: https://github.com/Qingbolan/silantui
+Author: Silan Hu
+Author-email: Silan Hu <silan.hu@u.nus.edu>
+License: MIT
+Project-URL: Homepage, https://github.com/Qingbolan/silantui
+Project-URL: Documentation, https://github.com/Qingbolan/silantui#readme
+Project-URL: Repository, https://github.com/Qingbolan/silantui
+Project-URL: Issues, https://github.com/Qingbolan/silantui/issues
+Keywords: ai,cli,chat,tui,textual,terminal,anthropic,claude,openai,interactive
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Software Development :: User Interfaces
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Environment :: Console
+Classifier: Framework :: Textual
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: textual>=0.47.0
+Requires-Dist: rich>=13.0.0
+Requires-Dist: pyfiglet>=0.8.0
+Requires-Dist: anthropic>=0.18.0
+Requires-Dist: openai>=1.0.0
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0.0; extra == "dev"
+Requires-Dist: pytest-cov>=4.0.0; extra == "dev"
+Requires-Dist: black>=23.0.0; extra == "dev"
+Requires-Dist: mypy>=1.0.0; extra == "dev"
+Requires-Dist: ruff>=0.1.0; extra == "dev"
+Dynamic: author
+Dynamic: home-page
+Dynamic: license-file
+Dynamic: requires-python
+
 # SilanTui
 
 **A Modern Terminal UI Framework for Python - Powered by Rich & Textual**

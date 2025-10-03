@@ -7,17 +7,19 @@ long_description = (this_directory / "README.md").read_text(encoding='utf-8')
 
 setup(
     name="silantui",
-    version="0.1.1",
+    version="0.4.0",
     author="Silan Hu",
     author_email="contact@silan.tech",
-    description="A modern Terminal UI Framework for Python",
+    description="A modern Terminal UI framework powered by Textual - Build beautiful interactive CLI applications",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/Qingbolan/silantui",
     project_urls={
         "Homepage": "https://silan.tech",
-        "Documentation": "https://github.com/Qingbolan/easy-cli",
-        "Source": "https://github.com/Qingbolan/easy-cli",
+        "Documentation": "https://github.com/Qingbolan/silantui#readme",
+        "Source": "https://github.com/Qingbolan/silantui",
+        "Issues": "https://github.com/Qingbolan/silantui/issues",
+        "Changelog": "https://github.com/Qingbolan/silantui/blob/main/CHANGELOG.md",
     },
     packages=find_packages(),
     classifiers=[
@@ -33,11 +35,15 @@ setup(
         "Programming Language :: Python :: 3.11",
         "Programming Language :: Python :: 3.12",
         "Operating System :: OS Independent",
+        "Environment :: Console",
+        "Framework :: Textual",
     ],
     python_requires=">=3.8",
     install_requires=[
+        "textual>=0.47.0",
         "rich>=13.0.0",
         "pyfiglet>=0.8.0",
+        "anthropic>=0.18.0",
         "openai>=1.0.0",
     ],
     extras_require={
@@ -47,6 +53,9 @@ setup(
             "black>=23.0.0",
             "mypy>=1.0.0",
             "ruff>=0.1.0",
+        ],
+        "all": [
+            "anthropic>=0.18.0",
             "openai>=1.0.0",
         ],
     },
@@ -55,4 +64,9 @@ setup(
             "silantui=silantui.cli:main",
         ],
     },
+    keywords=[
+        "tui", "textual", "terminal", "cli", "chat", "ai",
+        "anthropic", "claude", "openai", "gpt", "interactive",
+        "ui", "interface", "console", "framework",
+    ],
 )
