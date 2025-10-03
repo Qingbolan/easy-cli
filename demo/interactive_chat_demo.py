@@ -82,23 +82,6 @@ def main():
     """Main interactive demo"""
     console = Console()
 
-    # Welcome screen
-    console.clear()
-    console.print("[bold cyan]" + "=" * 60 + "[/bold cyan]")
-    console.print("[bold cyan]         Interactive Chat Demo - Try It Yourself!         [/bold cyan]")
-    console.print("[bold cyan]" + "=" * 60 + "[/bold cyan]")
-    console.print()
-    console.print("[bold]Instructions:[/bold]")
-    console.print("  • Type messages and press Enter to chat")
-    console.print("  • Type [yellow]/exit[/yellow] to quit")
-    console.print("  • Type [yellow]/new[/yellow] to clear chat history")
-    console.print("  • Type [yellow]/help[/yellow] to see commands")
-    console.print()
-    console.print("[dim]Note: Responses are simulated for demo purposes[/dim]")
-    console.print()
-    console.print("[green]Press Enter to start chatting...[/green]")
-    input()
-
     # Initialize chat display
     chat_display = LiveChatDisplay(
         console=console,
@@ -177,12 +160,8 @@ def main():
         pass
 
     finally:
-        # Stop and show goodbye message (terminal history will be visible)
         chat_display.stop()
         console.print("\n[green]Goodbye! Thanks for trying the demo.[/green]")
-        # Clear terminal before showing goodbye message
-        import os
-        os.system('clear' if os.name == 'posix' else 'cls')
 
 
 if __name__ == "__main__":

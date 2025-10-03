@@ -2,41 +2,64 @@
 Enhanced Chat UI - Improved chat interface with fixed input box and Markdown rendering
 """
 
-from typing import Optional, List
+from typing import Optional, List, Any, Dict
 from contextlib import contextmanager
+from dataclasses import dataclass, field
+import time
 
-from rich.console import Console
+from rich.console import Console, Group, RenderableType
 from rich.panel import Panel
 from rich.layout import Layout
 from rich.live import Live
 from rich.markdown import Markdown
 from rich.text import Text
 from rich.box import ROUNDED
-from rich.prompt import Prompt
 from rich.padding import Padding
+from rich.align import Align
+from rich.rule import Rule
 
 from .input_box import InputBox
+from .input_field import InputField
 
+
+# -------------------- helpers --------------------
+
+@dataclass
+class ChatMsg:
+    role: str
+    content: str
+    duration: Optional[float] = None
+    # Cache rendered objects to avoid repeated Markdown parsing and flicker
+    _render_cache: Optional[RenderableType] = field(default=None, repr=False)
+
+
+def _safe_markdown(src: str) -> RenderableType:
+    try:
+        return Markdown(src, code_theme="monokai")
+    except Exception:
+        return Text(src)
+
+
+# -------------------- Simple version: non-Live layout --------------------
 
 class ChatDisplay:
     """
     Chat Display Component - Fixed bottom input box with Markdown support
 
     Features:
-        - Fixed bottom input box
-        - Auto-scrolling chat history
+        - Fixed bottom input box (static rendering)
+        - Auto-scrolling chat history (simplified: one-time output)
         - Full Markdown rendering
-        - Beautiful message bubbles
-        - Real-time streaming display
+        - Simple streaming (no Live)
     """
-    
+
     def __init__(self, console: Optional[Console] = None):
         self.console = console or Console()
-        self.messages: List[dict] = []
+        self.messages: List[Dict[str, Any]] = []
         self.current_streaming = ""
         self.layout = Layout()
         self._setup_layout()
-    
+
     def _setup_layout(self):
         """Setup layout: top=title, middle=chat, bottom=input"""
         self.layout.split(
@@ -49,7 +72,8 @@ class ChatDisplay:
         self.layout["header"].update(
             Panel(
                 "[bold cyan]SilanTui Chat[/bold cyan] - Type message or /help for commands",
-                style="cyan"
+                style="cyan",
+                box=ROUNDED
             )
         )
 
@@ -57,140 +81,102 @@ class ChatDisplay:
         self.layout["input"].update(
             Panel(
                 "💬 [yellow]Type message...[/yellow] (Press Enter to send, /help for commands)",
-                style="yellow"
+                style="yellow",
+                box=ROUNDED
             )
         )
-    
-    def render_message(self, role: str, content: str, streaming: bool = False) -> Panel:
-        """
-        Render a single message
 
-        Args:
-            role: user or assistant
-            content: Message content
-            streaming: Whether streaming display
-        """
+    def render_message(self, role: str, content: str, streaming: bool = False) -> Panel:
         if role == "user":
-            # User message - right-aligned, blue
-            message_text = Text(content, style="white")
+            message_text = Text(content)
             return Panel(
                 message_text,
-                title="[bold blue]👤 You[/bold blue]",
+                title="[bold blue]You[/bold blue]",
                 border_style="blue",
                 box=ROUNDED,
-                title_align="left"
+                title_align="left",
             )
         else:
-            # AI message - left-aligned, green, Markdown rendering
             if streaming:
-                # Streaming display: use plain text
-                message_text = Text(content, style="white")
-                title = "[bold green]🤖 LLM[/bold green] [dim](typing...)[/dim]"
+                message_text = Text(content)
+                title = "[bold green]LLM[/bold green] [dim](typing...)[/dim]"
             else:
-                # Complete message: render Markdown
-                try:
-                    message_text = Markdown(content)
-                except Exception:
-                    # Markdown parsing failed, use plain text
-                    message_text = Text(content, style="white")
-                title = "[bold green]🤖 LLM[/bold green]"
-            
+                message_text = _safe_markdown(content)
+                title = "[bold green]LLM[/bold green]"
             return Panel(
                 message_text,
                 title=title,
                 border_style="green",
                 box=ROUNDED,
-                title_align="left"
+                title_align="left",
             )
-    
-    def render_chat_history(self):
-        """Render chat history"""
+
+    def render_chat_history(self) -> RenderableType:
         if not self.messages and not self.current_streaming:
-            # Empty chat
             return Panel(
                 Padding(
                     "[dim]No messages yet. Start chatting![/dim]",
-                    (10, 2)
+                    (4, 2)
                 ),
-                style="dim"
+                style="dim",
+                box=ROUNDED
             )
 
-        # Render all messages
-        rendered = []
-
+        rendered: List[RenderableType] = []
         for msg in self.messages:
-            panel = self.render_message(msg["role"], msg["content"])
-            rendered.append(panel)
-            rendered.append("")  # Empty line separator
-
-        # Add currently streaming message
+            rendered.append(self.render_message(msg["role"], msg["content"]))
+            rendered.append(Rule(style="dim"))
         if self.current_streaming:
-            panel = self.render_message("assistant", self.current_streaming, streaming=True)
-            rendered.append(panel)
-
-        # Combine all messages
-        from rich.console import Group
+            rendered.append(self.render_message("assistant", self.current_streaming, streaming=True))
         return Group(*rendered)
-    
+
     def update_display(self):
-        """Update display"""
         chat_content = self.render_chat_history()
         self.layout["chat"].update(chat_content)
 
     def add_user_message(self, content: str):
-        """Add user message"""
         self.messages.append({"role": "user", "content": content})
         self.update_display()
 
     def start_assistant_message(self):
-        """Start AI streaming response"""
         self.current_streaming = ""
         self.update_display()
 
     def append_streaming(self, chunk: str):
-        """Append streaming content"""
         self.current_streaming += chunk
         self.update_display()
 
     def finish_assistant_message(self):
-        """Finish AI response"""
         if self.current_streaming:
             self.messages.append({"role": "assistant", "content": self.current_streaming})
             self.current_streaming = ""
         self.update_display()
 
     def clear_messages(self):
-        """Clear messages"""
-        self.messages = []
+        self.messages.clear()
         self.current_streaming = ""
         self.update_display()
 
     def show(self):
-        """Show layout"""
         self.console.print(self.layout)
 
     def get_input(self, prompt_text: str = "💬 You") -> str:
-        """
-        Get user input
-
-        Note: This temporarily breaks layout because Rich's Prompt doesn't support Layout
-        Solution: Use input() and manually format
-        """
-        # Option 1: Use standard input (more stable)
         self.console.print()
-        user_input = Prompt.ask(f"[bold yellow]{prompt_text}[/bold yellow]")
-        return user_input.strip()
+        return self.console.input(f"[bold yellow]{prompt_text}[/bold yellow] ").strip()
 
+
+# -------------------- Live version: stable fixed bottom input with full frame redraw --------------------
 
 class LiveChatDisplay:
     """
     Real-time Chat Display - Uses Rich Live for truly fixed layout
 
     Features:
-        - Truly fixed bottom input box
-        - Real-time updates without flickering
-        - Full Markdown support
-        - Smooth streaming display
+        - Fixed bottom input (alt-screen global persist)
+        - Full frame manual redraw, no flicker
+        - History messages bottom-aligned viewport, clipped by height
+        - Markdown render cache
+        - Pause input without exiting alt-screen
     """
 
     def __init__(
@@ -205,206 +191,180 @@ class LiveChatDisplay:
         input_reserved_lines: int = 2,
     ):
         self.console = console or Console()
-        self.messages: List[dict] = []
-        self.current_streaming = ""
-        self.current_streaming_start_time = None
+        self.messages: List[ChatMsg] = []
+        self.current_streaming: str = ""
+        self.current_streaming_start_time: Optional[float] = None
         self.layout: Optional[Layout] = None
 
-        # Live & screen context
+        # Live
         self.live: Optional[Live] = None
-        self._screen_cm = None            # console.screen() context manager handle
 
-        self.role = role  # Optional role name
-        self.mode = mode  # Display mode
-        self.status = "ready"  # Current status
+        self.role = role
+        self.mode = mode
+        self.status = "ready"
 
-        self._alt_screen = True                 # keep alt-screen the whole session
+        self._alt_screen = True
         self.input_reserved_lines = max(1, int(input_reserved_lines))
-        self._default_reserved_lines = self.input_reserved_lines
-        self.clear_on_refresh = False           # no clear on refresh
+        self.clear_on_refresh = False
 
-        # Footer input component (polymorphic)
         self.input_box = InputBox(
             left_label=left_label or self.mode,
             tips=tips or "Type / for commands",
             footer_offset=footer_offset,
         )
+
+        # Interactive input field
+        self.input_field = InputField(
+            console=self.console,
+            prompt="💬 ",
+            placeholder="Type your message... (Enter to send, / for commands)",
+        )
+
         self._setup_layout()
-    
+
     # -------------------- layout --------------------
     def _setup_layout(self):
-        """Setup three-section layout"""
         self.layout = Layout()
         self.layout.split(
             Layout(name="header", size=3),
             Layout(name="chat", ratio=1),
-            Layout(name="footer", size=5),  # status/input/tips area
+            Layout(name="footer", size=3),
         )
-        self._update_header()
-        self._update_footer()
-        self._update_chat()
-    
-    def _update_header(self):
-        """Update header bar"""
+        # Only draw header once during initialization
         self.layout["header"].update(
             Panel(
                 "[bold cyan]SilanTui - Intelligent Chat Assistant[/bold cyan]",
                 style="cyan on black",
-                box=ROUNDED
+                box=ROUNDED,
             )
         )
-    
-    def _update_footer(self, status: str = "ready", user_input: str = "", input_mode: bool = False):
-        """Update footer using the InputBox component, stable height."""
+        self._update_footer()
+        self._update_chat()
+
+    def _update_footer(self, status: str = "ready"):
         self.status = status
+        # Fixed height, let InputBox handle internal line wrapping to avoid footer jitter
         self.layout["footer"].size = 3
-        renderable = self.input_box.render(status)
-        self.layout["footer"].update(renderable)
+        self.layout["footer"].update(self.input_box.render(status))
+
+    def _render_cached(self, msg: ChatMsg) -> RenderableType:
+        if msg._render_cache is not None:
+            return msg._render_cache
+        if msg.role == "user":
+            # User message: white background with blue text
+            user_text = Text(f" {msg.content} ", style="blue on white")
+            r: RenderableType = Padding(user_text, (0, 2))
+        else:
+            # Assistant message: metadata header + markdown body
+            header = Text()
+            header.append("* ", style="bold green")
+            meta = []
+            if self.role:
+                meta.append(self.role)
+            meta.append(time.strftime("%H:%M:%S"))
+            if msg.duration is not None:
+                meta.append(f"{msg.duration:.1f}s")
+            header.append(f"「{'/'.join(meta)}」", style="dim")
+            body = _safe_markdown(msg.content)
+            r = Group(header, body)
+        msg._render_cache = r
+        return r
+
+    def _render_streaming(self) -> RenderableType:
+        # Lightweight animation to avoid flashy effects causing jitter
+        tick = int(time.time() * 4) % 4
+        dots = "…"[:tick] if tick else ""
+        header = Text()
+        header.append("• ", style="bold green")
+        header.append("typing", style="dim")
+        header.append(dots, style="dim")
+        body = Text(self.current_streaming + "▌")
+        return Group(header, body)
 
     def _update_chat(self):
-        """Update chat area with bottom-aligned visible window."""
+        # Empty state
         if not self.messages and not self.current_streaming:
             welcome = Panel(
                 Padding(
                     Text.from_markup(
                         "[bold cyan]Welcome to SilanTui![/bold cyan]\n\n"
-                        "This is an intelligent AI chat assistant.\n"
-                        "You can:\n"
-                        "  • Type message to chat with AI\n"
-                        "  • Use /help to view all commands\n"
-                        "  • Use /new to start a new conversation\n"
-                        "  • Use /exit to quit the program\n\n"
-                        "[dim]Start typing your first message![/dim]"
+                        "• Type to chat\n"
+                        "• /help for commands\n"
+                        "• /new to reset\n"
+                        "• /exit to quit\n"
                     ),
-                    (2, 4)
+                    (2, 4),
                 ),
                 style="cyan dim",
-                box=ROUNDED
+                box=ROUNDED,
             )
             self.layout["chat"].update(welcome)
             return
 
-        from rich.console import Group
-        from rich.align import Align
-        import time
-
+        # Bottom-aligned viewport: fill from bottom to top by height
+        term_w = self.console.size.width
         term_h = self.console.size.height
         header_h = self.layout["header"].size or 0
         footer_h = self.layout["footer"].size or 0
         chat_h = max(3, term_h - header_h - footer_h)
 
-        visible: List = []
+        opts = self.console.options.update(width=term_w)
+        visible: List[RenderableType] = []
         used = 0
-        width = self.console.size.width
-        opts = self.console.options.update(width=width)
 
+        # First add streaming
         if self.current_streaming:
-            current_duration = None
-            if self.current_streaming_start_time:
-                current_duration = time.time() - self.current_streaming_start_time
-            last = self._render_message("assistant", self.current_streaming, streaming=True, duration=current_duration)
-            lines = self.console.render_lines(last, opts)
-            h = max(1, len(lines))
+            streaming_r = self._render_streaming()
+            h = max(1, len(self.console.render_lines(streaming_r, opts)))
             if used + h <= chat_h:
-                visible.insert(0, last)
+                visible.insert(0, streaming_r)
                 used += h
 
+        # Then fill from history in reverse order
         for msg in reversed(self.messages):
-            duration = msg.get("duration")
-            r = self._render_message(msg["role"], msg["content"], duration=duration)
-            lines = self.console.render_lines(r, opts)
-            h = max(1, len(lines))
-            if used + h > chat_h:
+            r = self._render_cached(msg)
+            rh = max(1, len(self.console.render_lines(r, opts)))
+            # Add spacing between messages (1 blank line)
+            spacing_h = 1
+            if used + rh + spacing_h > chat_h:
                 break
             visible.insert(0, r)
-            used += h
+            used += rh
+            # Add blank line for spacing
+            if used + spacing_h <= chat_h:
+                visible.insert(0, Text(""))
+                used += spacing_h
 
         self.layout["chat"].update(Align(Group(*visible), vertical="bottom"))
 
-    def _render_message(self, role: str, content: str, streaming: bool = False, duration: Optional[float] = None):
-        """Render message in minimalist style (no emoji, minimal chrome)"""
-        if role == "user":
-            return Text(f"> {content}", style="black on white")
-        else:
-            from datetime import datetime as _dt
-            from rich.console import Group as _Group
-            import time as _t
-
-            timestamp = _dt.now().strftime("%H:%M:%S")
-            parts = []
-            if self.role:
-                parts.append(self.role)
-            parts.append(timestamp)
-            if duration is not None:
-                parts.append(f"{duration:.1f}s")
-            meta = "/".join(parts)
-
-            if streaming:
-                cycle = int(_t.time() * 3) % 3
-                star = "*" if cycle == 0 else ("✦" if cycle == 1 else "✧")
-                header = Text()
-                header.append(f"{star} ", style="bold green blink")
-                header.append(f"「{meta}」", style="dim")
-                header.append(" ●", style="blink green")
-                body = Text(content + "▌", style="white")
-                return _Group(header, body)
-            else:
-                header = Text()
-                header.append("* ", style="bold green")
-                header.append(f"「{meta}」", style="dim")
-                try:
-                    body = Markdown(content)
-                except Exception:
-                    body = Text(content, style="white")
-                from rich.console import Group as _Group2
-                return _Group2(header, body)
-    
-    # -------------------- Live lifecycle & screen --------------------
+    # -------------------- Live lifecycle --------------------
     def start(self, use_alt_screen: bool = True):
-        """
-        Enter alternate screen once and keep it for the whole session.
-        Live runs with screen=False so stopping Live won't exit alt-screen.
-        """
         if self.live:
             return
-        # Enter alt-screen via console.screen() context and keep it open
-        if self._screen_cm is None and use_alt_screen:
-            self._screen_cm = self.console.screen()
-            self._screen_cm.__enter__()
 
-        # Create Live without taking control of screen
         self.live = Live(
             self.layout,
             console=self.console,
-            refresh_per_second=10,
-            screen=False,           # important: don't toggle screen here
-            auto_refresh=False,     # we do full-frame manual updates
+            refresh_per_second=12,
+            screen=True,        # Must be True: full screen redraw, prevents append/scroll
+            auto_refresh=False, # Manual refresh to prevent jitter
+            transient=False,
+            redirect_stdout=False,
+            redirect_stderr=False,
         )
         self.live.start()
-        # First full-frame draw
-        self._update_header()
-        self._update_footer(self.status)
-        self._update_chat()
-        self.live.update(self.layout, refresh=True)
-    
+
     def stop(self):
-        """Stop Live and exit alt-screen. Call only when quitting the app."""
         if self.live:
             try:
                 self.live.stop()
             finally:
                 self.live = None
-        if self._screen_cm is not None:
-            try:
-                self._screen_cm.__exit__(None, None, None)
-            finally:
-                self._screen_cm = None
 
     def _full_redraw(self):
-        """Full-frame redraw: header/footer/chat then update(refresh=True)."""
         if not self.live:
             return
-        self._update_header()
+        # Don't update header - only drawn once in _setup_layout()
         self._update_footer(self.status)
         self._update_chat()
         self.live.update(self.layout, refresh=True)
@@ -414,102 +374,120 @@ class LiveChatDisplay:
 
     @contextmanager
     def pause(self):
-        """
-        Temporarily stop Live to perform blocking IO (e.g., input) while
-        staying in the same alt-screen. Live(screen=False) ensures that
-        stopping Live doesn't exit alt-screen.
-        """
-        was_running = bool(self.live)
+        """Pause rendering without leaving alt-screen."""
+        if not self.live:
+            yield
+            return
+        # Temporarily stop auto-refresh, but keep Live active
+        was_running = self.live.is_started
         try:
             if was_running:
                 self.live.stop()
             yield
         finally:
             if was_running:
-                # restart Live and redraw a full frame
-                self.live.start()
-                self._full_redraw()
-    
+                self.live.start(refresh=True)
+
     # -------------------- Chat operations --------------------
     def add_user_message(self, content: str):
-        self.messages.append({"role": "user", "content": content})
+        self.messages.append(ChatMsg(role="user", content=content))
         self._full_redraw()
-    
+
     def start_assistant_message(self):
-        import time
         self.current_streaming = ""
         self.current_streaming_start_time = time.time()
         self._update_footer("typing")
         self._full_redraw()
 
     def append_streaming(self, chunk: str):
+        if not chunk:
+            return
         self.current_streaming += chunk
+        # Partial update of chat to reduce full frame cost
         self._update_chat()
         if self.live:
             self.live.update(self.layout, refresh=True)
 
     def finish_assistant_message(self):
-        import time
         if self.current_streaming:
-            duration = time.time() - self.current_streaming_start_time if self.current_streaming_start_time else None
-            self.messages.append({
-                "role": "assistant",
-                "content": self.current_streaming,
-                "duration": duration
-            })
+            dur = time.time() - self.current_streaming_start_time if self.current_streaming_start_time else None
+            self.messages.append(ChatMsg(role="assistant", content=self.current_streaming, duration=dur))
             self.current_streaming = ""
             self.current_streaming_start_time = None
         self._update_footer("ready")
         self._full_redraw()
-    
+
     def clear_messages(self):
-        self.messages = []
+        self.messages.clear()
         self.current_streaming = ""
         self._full_redraw()
-    
+
     def show_error(self, message: str):
-        self._update_footer(f"❌ [bold red]{message}[/bold red]")
+        self._update_footer(f"[bold red]❌ {message}[/bold red]")
         self._full_redraw()
-    
+
     def show_success(self, message: str):
-        self._update_footer(f"✅ [bold green]{message}[/bold green]")
+        self._update_footer(f"[bold green]✅ {message}[/bold green]")
         self._full_redraw()
 
     def notify(self, message: str, style: str = "cyan"):
-        try:
-            self._update_footer(f"[bold {style}]{message}[/bold {style}]")
-            self._full_redraw()
-        except Exception:
-            pass
+        self._update_footer(f"[bold {style}]{message}[/bold {style}]")
+        self._full_redraw()
 
-    def read_input(self, mode: str = "multiline") -> str:
+    def show(self):
+        # NEVER print layout during Live mode - causes frame append/stacking
+        if self.live:
+            return
+        self.console.print(self.layout)
+
+    def read_input(self, prompt: str = "> ") -> str:
         """
-        Read input while staying in alt-screen:
-        - do not leave alt-screen
-        - stop Live temporarily, read input on the same screen
-        - resume Live and full-frame redraw
+        Read input using integrated input field
+        - No need to stop/pause Live
+        - Real-time character input with cursor
+        - Works seamlessly within alt-screen
         """
         if not self.live:
-            self.start(use_alt_screen=True)
+            self.start()
 
-        # show typing state before input
-        self._update_footer("typing")
-        if self.live:
+        # Update footer to show input field
+        self.input_field.clear()
+        self.input_field._active = True
+        self.layout["footer"].update(self.input_field.render("ready"))
+        self.live.update(self.layout, refresh=True)
+
+        # Read input character by character
+        try:
+            while True:
+                char = self.input_field.read_char()
+                if char is None:
+                    continue
+
+                # Process the key
+                should_submit = self.input_field.process_key(char)
+
+                # Update display
+                self.layout["footer"].update(self.input_field.render("typing"))
+                self.live.update(self.layout, refresh=True)
+
+                if should_submit:
+                    break
+
+            # Get the final value
+            value = self.input_field.get_value()
+            self.input_field._active = False
+
+            # Restore footer to status display
+            self._update_footer("ready")
             self.live.update(self.layout, refresh=True)
 
-        with self.pause():
-            try:
-                text = self.console.input("> ")
-            except Exception:
-                text = input("> ")
+            return value.strip()
 
-        # restore ready state
-        self._update_footer("ready")
-        if self.live:
+        except (KeyboardInterrupt, EOFError):
+            self.input_field._active = False
+            self._update_footer("ready")
             self.live.update(self.layout, refresh=True)
+            raise
 
-        return text.strip()
 
-
-# Export
-__all__ = ['ChatDisplay', 'LiveChatDisplay']
+__all__ = ["ChatDisplay", "LiveChatDisplay"]

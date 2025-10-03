@@ -35,23 +35,6 @@ def main():
     """Main demo function"""
     console = Console()
 
-    # Clear screen and show welcome
-    console.clear()
-    console.print("[bold cyan]═══════════════════════════════════════════════[/bold cyan]")
-    console.print("[bold cyan]   Chat Display Demo - Minimalist Interface   [/bold cyan]")
-    console.print("[bold cyan]═══════════════════════════════════════════════[/bold cyan]")
-    console.print()
-    console.print("This demo showcases the new minimalist chat interface:")
-    console.print("  • [green]Animated * indicator[/green] during streaming")
-    console.print("  • [white on black]White background user messages[/white on black] with > prefix")
-    console.print("  • [dim]Status display[/dim] above input (left-aligned)")
-    console.print("  • [cyan]Mode and tips display[/cyan] below input")
-    console.print("  • [yellow]Duration tracking[/yellow] for responses")
-    console.print("  • [magenta]5-line footer layout[/magenta] with horizontal separators")
-    console.print()
-    console.print("[dim]Press Enter to start the demo...[/dim]")
-    input()
-
     # Initialize chat display with role and mode
     chat_display = LiveChatDisplay(
         console=console,
@@ -59,8 +42,11 @@ def main():
         mode="streaming"
     )
 
-    # Start live display
+    # Start live display - this will use alt-screen
     chat_display.start()
+
+    # Add welcome message as a system message in chat
+    time.sleep(0.5)
 
     # Demo conversations
     demo_conversations = [
@@ -83,12 +69,9 @@ def main():
             # Simulate user typing
             time.sleep(1.5)
 
-            # Stop live display to get input
-            chat_display.stop()
-            console.print(f"\n[dim]Demo message {i}/{len(demo_conversations)}[/dim]")
-            console.print(f"[bold yellow]Simulating user input:[/bold yellow] {conv['user']}")
+            # Show progress in footer without stopping Live
+            chat_display.notify(f"Demo message {i}/{len(demo_conversations)}: {conv['user'][:40]}...", "yellow")
             time.sleep(1)
-            chat_display.start()
 
             # Add user message
             chat_display.add_user_message(conv['user'])
@@ -106,22 +89,13 @@ def main():
             chat_display.finish_assistant_message()
             time.sleep(1)
 
-        # Show completion message
+        # Show completion message in footer
         time.sleep(1)
-        chat_display.stop()
+        chat_display.show_success("Demo completed! Press Ctrl+C to exit")
 
-        console.print("\n[bold green]✓ Demo completed![/bold green]")
-        console.print("\n[bold cyan]Key Features Demonstrated:[/bold cyan]")
-        console.print("  1. [green]Pulsing * animation[/green] during streaming (* → ✦ → ✧)")
-        console.print("  2. [white on black]User messages[/white on black] with > prefix and white background")
-        console.print("  3. [yellow]Metadata display[/yellow] - Role/Time/Duration in 「」 brackets")
-        console.print("  4. [dim]Status indicator[/dim] above input (left-aligned)")
-        console.print("  5. [cyan]Mode display[/cyan] below input (left: mode, right: tips)")
-        console.print("  6. [magenta]Markdown rendering[/magenta] for formatted AI responses")
-        console.print("  7. [yellow]Footer layout[/yellow] - 5 lines with horizontal separators")
-        console.print("\n[dim]Press Ctrl+C to exit[/dim]")
-
-        input()
+        # Keep Live running, wait for exit
+        while True:
+            time.sleep(1)
 
     except KeyboardInterrupt:
         chat_display.stop()
